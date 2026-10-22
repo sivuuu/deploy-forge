@@ -1,0 +1,29 @@
+# DeployForge Trivy Security Gate Configuration
+scan:
+  security-checks:
+    - vuln
+    - config
+    - secret
+
+severity:
+  - HIGH
+  - CRITICAL
+
+vulnerability:
+  type:
+    - os
+    - library
+
+exit-code: 1
+ignore-unfixed: false
+
+format: json
+output: trivy-report.json
+
+policy:
+  gate:
+    block_on_critical: true
+    block_on_high: true
+    max_allowed_critical: 0
+    max_allowed_high: 2
+    require_exception_approval: true

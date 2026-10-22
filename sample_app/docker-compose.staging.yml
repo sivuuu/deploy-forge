@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  sample-app-staging:
+    image: ${DEPLOYFORGE_IMAGE:-sample-app:latest}
+    container_name: deployforge-staging-app
+    restart: always
+    ports:
+      - "8085:8085"
+    environment:
+      - ENVIRONMENT=staging
+      - APP_VERSION=${APP_VERSION:-v1.0.0}
+      - COMMIT_SHA=${COMMIT_SHA:-unknown}
+      - SIMULATE_HEALTH_FAILURE=${SIMULATE_HEALTH_FAILURE:-false}
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8085/health').read()"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 2s
+    networks:
+      - staging-network
+
+networks:
+  staging-network:
+    driver: bridge

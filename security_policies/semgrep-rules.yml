@@ -1,0 +1,37 @@
+rules:
+  - id: deployforge-hardcoded-secret
+    pattern-regex: '(?i)(password|secret|api_key|token)\s*=\s*["\'][A-Za-z0-9_\-\.]{8,}["\']'
+    message: "DeployForge Security Gate: Hardcoded secret or credential detected in source code. Use environment variables."
+    severity: ERROR
+    languages: [python, javascript, yaml]
+    metadata:
+      cwe: "CWE-798: Use of Hard-coded Credentials"
+      category: security
+      confidence: HIGH
+
+  - id: deployforge-insecure-flask-debug
+    pattern: app.run(..., debug=True, ...)
+    message: "DeployForge Security Gate: Flask debug mode is enabled in production/staging deployment code."
+    severity: ERROR
+    languages: [python]
+    metadata:
+      cwe: "CWE-489: Active Debug Code"
+      category: security
+
+  - id: deployforge-dangerous-eval
+    pattern: eval(...)
+    message: "DeployForge Security Gate: Dangerous eval() usage detected. Risk of arbitrary code execution."
+    severity: ERROR
+    languages: [python]
+    metadata:
+      cwe: "CWE-95: Improper Neutralization of Directives in Dynamically Evaluated Code"
+      category: security
+
+  - id: deployforge-unsafe-os-system
+    pattern: os.system(...)
+    message: "DeployForge Security Gate: Insecure os.system call. Use subprocess with parameterized arguments to prevent shell injection."
+    severity: WARNING
+    languages: [python]
+    metadata:
+      cwe: "CWE-78: OS Command Injection"
+      category: security
